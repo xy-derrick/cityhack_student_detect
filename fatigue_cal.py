@@ -389,7 +389,7 @@ def detect_all():
                 eyeBrow_dis += eyeBrow_dis_new
                 eyeBrow_dis_average = eyeBrow_dis/count
                 if eyeBrow_dis_new < eyeBrow_dis_average:
-                    if total_confused_cnt > 300:
+                    if total_confused_cnt > 260:
                         cv2.putText(
                             frame, "Confused", (left, bottom), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3
                         )
@@ -407,11 +407,11 @@ def detect_all():
                 frame, "time: {}".format(time_end-time_start), (0, 350), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                 (0, 255, 255), 3
             )
-            if total_confused_cnt < 300:
+            if total_confused_cnt < 260:
                 temp_confused_cnt = 0
             else:
                 temp_confused_cnt = total_confused_cnt
-            total_positive_score = 100*(total_sleepy_cnt*0.35+temp_confused_cnt*0.02)/(time_end-time_start)
+            total_positive_score = 100*(total_sleepy_cnt*0.35+temp_confused_cnt*0.1)/(time_end-time_start)
             cv2.putText(
                 frame, "positive_score: {}".format(total_positive_score), (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 1,
                 (0, 255, 255), 3
