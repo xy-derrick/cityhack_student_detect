@@ -11,10 +11,40 @@ import time
 import dlib
 import cv2
 import math
-import tkinter
-import tkinter.messagebox
+from tkinter import *
+import tkinter.messagebox as messagebox
 import time
 from threading import Thread
+
+
+
+class Application:
+    def __init__(self):
+        self.root = Tk()
+        self.root.title("Sleepy_Confused_detect")  # 设置窗口标题
+        self.root.geometry("400x200")
+        self.detectButton = Button(self.root, text='Start Detection', command=self.detect)
+        self.scoreButton = Button(self.root, text='Write Score', command=self.write_score)
+        self.exitButton = Button(self.root, text='Exit', command=quit)
+        self.T = Text(self.root, height=2, width=30)
+        self.detectButton.pack()
+        self.exitButton.pack()
+        self.scoreButton.pack()
+        self.T.pack()
+        self.res=100
+
+    def quit(self):
+        self.root.destroy()
+
+    def detect(self):
+        res = detect_all()
+        self.res = res
+
+    def write_score(self):
+        self.T.delete("1.0", "end")
+        self.T.insert(END, "total_score: {}\n".format(self.res))
+
+
 
 # (UVW)
 object_pts = np.float32(
@@ -180,10 +210,11 @@ def detect_all():
     mTOTAL = 0
     hCOUNTER = 0
     hTOTAL = 0
-
     total_sleepy_cnt = 0
     total_confused_cnt = 0
     eyeBrow_dis = 0
+    total_positive_score = 100
+    all_score_lst = []
 
     print("[INFO] loading facial landmark predictor...")
     # dlib.get_frontal_face_detector()
@@ -201,7 +232,9 @@ def detect_all():
     cap = cv2.VideoCapture(0)
     time_start = time.time()
     count = 0
+    round_count = 0
     while cap.isOpened():
+        round_count += 1
         # read img and turn grey
         ret, frame = cap.read()
         frame = imutils.resize(frame, width=720)
@@ -209,7 +242,6 @@ def detect_all():
         # find face
         rects = detector(gray, 0)
         if len(rects) > 0:
-
             for rect in rects:
                 shape = predictor(gray, rect)
                 # turn array
@@ -387,15 +419,16 @@ def detect_all():
                 eyeBrow_dis_new = cal_distance(shape[21], shape[22])
                 count += 1
                 eyeBrow_dis += eyeBrow_dis_new
-                eyeBrow_dis_average = eyeBrow_dis/count
+                eyeBrow_dis_average = eyeBrow_dis / count
                 if eyeBrow_dis_new < eyeBrow_dis_average:
-                    if total_confused_cnt > 260:
+                    if total_confused_cnt > 60:
                         cv2.putText(
                             frame, "Confused", (left, bottom), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3
                         )
                     total_confused_cnt += 1
             cv2.putText(
-                frame, "sleepy_cnt: {}".format(total_sleepy_cnt), (0, 300), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255),
+                frame, "sleepy_cnt: {}".format(total_sleepy_cnt), (0, 300), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                (0, 255, 255),
                 3
             )
             cv2.putText(
@@ -404,18 +437,20 @@ def detect_all():
             )
             time_end = time.time()
             cv2.putText(
-                frame, "time: {}".format(time_end-time_start), (0, 350), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                frame, "time: {}".format(time_end - time_start), (0, 350), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                 (0, 255, 255), 3
             )
-            if total_confused_cnt < 260:
-                temp_confused_cnt = 0
-            else:
-                temp_confused_cnt = total_confused_cnt
-            total_positive_score = 100*(total_sleepy_cnt*0.35+temp_confused_cnt*0.1)/(time_end-time_start)
-            cv2.putText(
-                frame, "positive_score: {}".format(total_positive_score), (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                (0, 255, 255), 3
-            )
+        if total_confused_cnt > 60:
+            if round_count == 20:
+                total_positive_score = 100 - total_sleepy_cnt * 8 - total_confused_cnt + 60
+                all_score_lst.append(total_positive_score)
+        cv2.putText(
+            frame, "positive_score: {}".format(total_positive_score), (0, 400), cv2.FONT_HERSHEY_SIMPLEX, 1,
+            (0, 255, 255), 3
+        )
+        if round_count == 20:
+            total_positive_score=100
+            round_count=0
         # show with opencv
         cv2.imshow("Frame", frame)
         # if the `q` key was pressed, break from the loop
@@ -425,7 +460,8 @@ def detect_all():
     cap.release()
     # do a bit of cleanup
     cv2.destroyAllWindows()
-
+    return sum(all_score_lst)/len(all_score_lst)
 
 if __name__ == "__main__":
-    detect_all()
+    app = Application()
+    app.root.mainloop()
