@@ -33,7 +33,23 @@ Our idea is to develop a real-time facial expression detection tool which analyz
 
 ## Data Processing and Algorithms
 
-sleepy count: Blinking count: eye aspect ratio of 0.2 for 3 consecutive frames Yawning count: mouth aspect ratio of 0.5 for 3 consecutive frames Sleepy nod count: pitch(x) rotation angle of 0.3 for 3 consecutive frames Confusion count: For the first 259 consecutive frames: The algorithm takes the distance between the eyebrows for each frames and calculates the average distance for 259 frames. Starting from the 260 frame: The algorithm compares whether the distance of eyebrows of each frame is shorter than the average. If yes, the confusion count increases by one. 
+sleepy count: 
+
+Blinking count: eye aspect ratio of 0.2 for 3 consecutive frames 
+
+Yawning count: mouth aspect ratio of 0.5 for 3 consecutive frames 
+
+Sleepy nod count: pitch(x) rotation angle of 0.3 for 3 consecutive frames 
+
+Confusion count: 
+
+For the first 259 consecutive frames: 
+
+The algorithm takes the distance between the eyebrows for each frames and calculates the average distance for 259 frames. 
+
+Starting from the 260 frame: 
+
+The algorithm compares whether the distance of eyebrows of each frame is shorter than the average. If yes, the confusion count increases by one. 
 
 ## Impact
 
