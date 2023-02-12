@@ -1,4 +1,5 @@
 #City Hack 2023
+
 ##Team 
 team name: rp++
 members:
@@ -7,10 +8,13 @@ XU Yuan
 NG Cheuk Yiu
 CHEN Yihuan 
 Ng Pak Lam
+
 ##Probelm description
 In the foreseeable future, online classes will continue to be used as a complementary means of teaching and learning. One of the disadvantages of online classes is that the teacher cannot be in front of the students as in an offline classroom and thus follow the students' expressions to see how they are doing. When a student is confused and not keeping up, the teacher cannot detect it in real-time. Also, students are easily distracted and it’s hard to be monitored by the course instructors online. Such a situation calls for a mechanism to detect the expression of students to return real-time feedback to teachers and thus improve class interaction. 
+
 ##Solution
 Our idea is to develop a real-time facial expression detection tool which analyzes facial attributes to calculate the confusion or attention level of students and give feedback to teachers.
+
 ##Workflow
 -	Input video sequence of student
 -	Extract features like head pose, eye direction, lip movement etc.
