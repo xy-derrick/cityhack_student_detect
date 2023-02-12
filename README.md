@@ -43,13 +43,19 @@ Sleepy nod count: pitch(x) rotation angle of 0.3 for 3 consecutive frames
 
 Confusion count: 
 
-For the first 259 consecutive frames: 
+For the first 59 consecutive frames:
 
-The algorithm takes the distance between the eyebrows for each frames and calculates the average distance for 259 frames. 
+The algorithm takes the distance between the eyebrows for each frames and calculates the average distance for 59 frames.
 
-Starting from the 260 frame: 
+Calculation: 
 
-The algorithm compares whether the distance of eyebrows of each frame is shorter than the average. If yes, the confusion count increases by one. 
+- For each 20 consecutive frames, a period score will be recorded 
+
+- Period score = 100-total_sleepy_cnt * 8 - total_confused_cnt + 60
+
+- The total score is the average of the period score.  
+
+- Full score is 100**
 
 ## Impact
 
